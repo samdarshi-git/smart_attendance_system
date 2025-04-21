@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user, logout_user
+from flask_login import LoginManager, logout_user
 from datetime import timedelta
 import os
 
