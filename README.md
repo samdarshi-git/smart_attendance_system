@@ -50,13 +50,9 @@ Follow these straightforward steps to get SnapTrack up and running on your local
     ```
     **Note:** To use PostgreSQL, modify the `SQLALCHEMY_DATABASE_URI` to your PostgreSQL connection string. For example: `postgresql://user:password@host:port/database_name`.
 
-4.  **Initialize and Migrate the Database:**
-    Use Flask-Migrate to set up the database:
-    ```bash
-    flask db init      # Run this only for the first time
-    flask db migrate -m "Initial migration"
-    flask db upgrade
-    ```
+4.  **Initialize the Database:**
+    Use create_tables.py: Run this only for the first time
+    
 
 5.  **Launch the Application:**
     Start the Flask development server:
@@ -85,7 +81,6 @@ smart_attendance_system/
 │   └── create_tables.py  # Optional script for initial database setup (dev/testing)
 ├── instance/
 │   └── app.db            # SQLite database file (default)
-├── migrations/         # Database migration scripts
 ├── run.py              # Application entry point
 ├── .env                # Environment variables
 ├── .gitignore          # Specifies intentionally untracked files that Git should ignore
