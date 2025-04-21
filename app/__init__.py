@@ -20,7 +20,7 @@ def create_app():
     app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER')
     
     # ⏳ Session timeout: 5 minutes of inactivity
-    app.permanent_session_lifetime = timedelta(minutes=1)
+    app.permanent_session_lifetime = timedelta(minutes=5)
 
     db.init_app(app)
     login_manager.init_app(app)
