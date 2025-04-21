@@ -1,10 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from werkzeug.utils import secure_filename
-# from werkzeug.security import generate_password_hash
 from app.models import db, Teacher, Student, Class, Subject, AttendanceLog, AttendanceSummary
 import csv
 from app.routes import role_required
-from flask_login import login_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 

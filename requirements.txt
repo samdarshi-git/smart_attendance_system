@@ -10,3 +10,4 @@ deepface
 scipy
 xhtml2pdf
 pytz
+Flask-Migrate

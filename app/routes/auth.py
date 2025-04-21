@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session
-# from werkzeug.security import check_password_hash
+from flask import Blueprint, render_template, redirect, url_for, flash, session
 from app.forms import LoginForm
 from app.models import Teacher, Student
 from flask import session

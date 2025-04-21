@@ -1,60 +1,107 @@
 # 📸 SnapTrack - Smart Attendance System
 
-Developed a web-based attendance system using facial recognition for my B.Tech Minor Project. Students register with selfie videos, and teachers upload class recordings. The system automatically detects and marks attendance based on facial recognition, streamlining the process and improving accuracy.
-
-## 🚀 Features
-
-- 📚 Role-based login system (Admin / Teacher / Student)
-- 🎥 Upload & manage videos for class attendance
-- 🧠 Face recognition using deep learning embeddings
-- 📊 Dashboard and attendance analytics
-- 🔐 Secure login sessions
-- 💾 Swappable database backend (SQLite ➜ PostgreSQL-ready)
+A smart attendance system leveraging the power of facial recognition to streamline and automate attendance tracking. Students register effortlessly with selfie videos, and teachers simply upload class recordings. SnapTrack intelligently detects faces, accurately marks attendance, and offers a fast, accurate, and completely hands-free solution!
 
 ---
 
-### ⚙️ Setup Instructions
+## ✨ Key Features
 
-## 1. 📦 Install Requirements
+* **Role-Based Access:** Secure and distinct login portals for Administrators, Teachers, and Students, ensuring appropriate access levels.
+* **Effortless Video Management:** Teachers can easily upload and manage class recordings for attendance processing.
+* **Intelligent Face Recognition:** Built upon robust deep learning models for accurate and reliable facial detection and recognition.
+* **Comprehensive Analytics Dashboard:** Gain valuable insights with attendance analytics presented in an intuitive dashboard.
+* **Secure Session Handling:** Robust session management to protect user data and maintain application security.
+* **Seamless Database Migrations:** Integrated Flask-Migrate for smooth and efficient database schema updates.
+* **Flexible Database Choice:** Easily switch between the simplicity of SQLite for development and the power of PostgreSQL for production by a simple configuration change.
 
-pip install -r requirements.txt
+---
 
-## 2. ⚙️ Create .env file
-Create a .env file in the root folder and add your configuration:
+## 🛠️ Getting Started
 
-SECRET_KEY=your-secret-key
-SQLALCHEMY_DATABASE_URI=sqlite:///../instance/app.db
-UPLOAD_FOLDER=app/static/uploads/
-ADMIN_ID=adminid
-ADMIN_PASSWORD=adminpassword
-⚠️ This file is ignored by Git for security.
+Follow these straightforward steps to get SnapTrack up and running on your local machine:
 
-## 3. 🗂️ Create Initial Database (Development)
-If you're running the app for the first time or made changes to models, use the helper script to create tables:
+### Prerequisites
 
-python helper/create_tables.py
+* **Python:** Ensure you have Python 3.8 or a later version installed on your system. 
+* **Git:** Git is required to clone the repository. If you don't have it.
 
-## 4. ▶️ Run the Application
+### Installation Steps
 
-python run.py
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/samdarshi-git/smart_attendance_system.git](https://github.com/samdarshi-git/smart_attendance_system.git)
+    cd smart_attendance_system
+    ```
 
-The app will be accessible at:
-http://localhost:5000
+2.  **Install Dependencies:**
+    Navigate to the cloned directory and install the necessary Python packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-💡 Notes
-.gitkeep files are placed inside empty folders like uploads/ to ensure directory structure is preserved in Git.
+3.  **Configure Environment Variables:**
+    Create a `.env` file in the root directory of the project and populate it with your specific configurations:
+    ```ini
+    SECRET_KEY=your-secret-key-here
+    SQLALCHEMY_DATABASE_URI=sqlite:///../instance/app.db
+    UPLOAD_FOLDER=app/static/uploads/
+    ADMIN_ID=your-admin-id
+    ADMIN_PASSWORD=your-admin-password
+    ```
+    **Note:** To use PostgreSQL, modify the `SQLALCHEMY_DATABASE_URI` to your PostgreSQL connection string. For example: `postgresql://user:password@host:port/database_name`.
 
-instance/app.db (the SQLite DB file) is ignored via .gitignore. Anyone can create their own DB.
+4.  **Initialize and Migrate the Database:**
+    Use Flask-Migrate to set up the database:
+    ```bash
+    flask db init      # Run this only for the first time
+    flask db migrate -m "Initial migration"
+    flask db upgrade
+    ```
 
-Uploaded media like class and student videos are not stored. They should be uploaded by users.
+5.  **Launch the Application:**
+    Start the Flask development server:
+    ```bash
+    python run.py
+    ```
+    You can now access the application in your web browser at `http://localhost:5000`.
+
+6.  **Admin Login:**
+    Use the `ADMIN_ID` and `ADMIN_PASSWORD` you defined in the `.env` file to log in to the Admin dashboard and start managing your system.
+
+---
+
+## 📂 Project Structure
+
+smart_attendance_system/
+├── app/
+│   ├── init.py
+│   ├── models.py         # Database models
+│   ├── forms.py          # Form definitions
+│   ├── routes/           # Application routes and views
+│   ├── ml/               # Machine learning related code
+│   ├── static/uploads/   # Directory for uploaded videos
+│   └── templates/        # HTML templates
+├── helper/
+│   └── create_tables.py  # Optional script for initial database setup (dev/testing)
+├── instance/
+│   └── app.db            # SQLite database file (default)
+├── migrations/         # Database migration scripts
+├── run.py              # Application entry point
+├── .env                # Environment variables
+├── .gitignore          # Specifies intentionally untracked files that Git should ignore
+├── requirements.txt    # List of Python dependencies
+└── README.md           # This file
 
 
-📦 Coming Soon
+---
 
-✅ Flask-Migrate integration
+## 🚀 What's On the Horizon?
 
-🌐 PostgreSQL config
+* **🌐 PostgreSQL Integration Ready:** Seamlessly switch to a production-ready PostgreSQL database with a simple `.env` configuration.
+* **🚀 Deployment Guide:** Stay tuned for comprehensive deployment guides for popular platforms like Heroku and Render.
+* **📈 Enhanced Analytics:** Expect more detailed attendance analytics and insightful visual representations.
+* **🔁 CI/CD and Testing:** We are working on implementing Continuous Integration/Continuous Deployment pipelines and robust testing frameworks.
 
-☁️ Deployment guide (Render/Heroku)
+---
 
-📈 Advanced analytics and attendance summaries
+## ❤️ Made with Love by Samdarshi
