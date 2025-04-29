@@ -124,7 +124,11 @@ def upload_video():
 
             send_progress(current_user.teacher_id, "🔍 Matching faces to students...", 75)
             recognized_students = recog.match_faces_to_students(valid_embeddings, student_data)
-            print(f"[RESULT] Recognized Students: {recognized_students}")
+            recognized_names = [
+                student.name for student in Student.query.filter(Student.student_id.in_(recognized_students)).all()
+            ]
+            print(f"[RESULT] Recognized Students: {recognized_names}")
+
 
             send_progress(current_user.teacher_id, "🎉 Done!", 100)
 
@@ -165,6 +169,7 @@ def upload_video():
         teacher_classes=teacher_classes,
         teacher_subjects=teacher_subjects,
         students_with_flags=students_with_flags,
+        recognition_method='video',
         class_id=class_id,
         subject_id=subject_id,
         period_input=periods,
@@ -179,6 +184,106 @@ def get_subjects(class_id):
     subjects = Subject.query.filter_by(class_id=class_id).all()
     subject_list = [{'id': subj.subject_id, 'name': subj.subject_name} for subj in subjects]
     return jsonify(subject_list)
+
+
+
+
+@teacher_bp.route('/upload_csv', methods=['POST'])
+@login_required
+@role_required('teacher')
+def upload_csv():
+    if 'csv_file' not in request.files:
+        flash("No file selected", "danger")
+        return redirect(url_for('teacher.dashboard'))
+
+    csv_file = request.files['csv_file']
+    class_id = request.form.get('class_id')
+    subject_id = request.form.get('subject_id')
+    periods = request.form.get('periods')
+    date = request.form.get('date')
+
+    if not all([class_id, subject_id, periods, date]):
+        flash("Missing required form data. Please select Class, Subject, Periods, and Date.", "danger")
+        return redirect(url_for('teacher.dashboard'))
+
+
+    if not csv_file.filename.endswith(('.csv', '.txt')):
+        flash("Invalid file type. Upload .csv or .txt file", "danger")
+        return redirect(url_for('teacher.dashboard'))
+
+    content = csv_file.read().decode('utf-8').strip()
+    try:
+        recognized_ids = {int(id.strip()) for id in content.split(',') if id.strip().isdigit()}
+    except ValueError:
+        flash("Invalid file content", "danger")
+        return redirect(url_for('teacher.dashboard'))
+
+    all_students = Student.query.filter_by(class_id=class_id).all()
+    students_with_flags = [(student, student.student_id in recognized_ids) for student in all_students]
+
+    class_obj = Class.query.get(current_user.class_in_charge)
+    class_name = class_obj.class_name if class_obj else "N/A"
+
+    teacher_classes = Class.query.all()
+    teacher_subjects = Subject.query.filter(
+        Subject.class_id.in_([cls.class_id for cls in teacher_classes])
+    ).all()
+
+    return render_template(
+        'teacher/dashboard.html',
+        teacher=current_user,
+        class_name=class_name,
+        teacher_classes=teacher_classes,
+        teacher_subjects=teacher_subjects,
+        students_with_flags=students_with_flags,
+        recognition_method='csv',
+        class_id=class_id,
+        subject_id=subject_id,
+        period_input=periods,
+        date=date
+    )
+
+
+@teacher_bp.route('/manual_attendance', methods=['POST'])
+@login_required
+@role_required('teacher')
+def manual_attendance():
+    class_id = request.form.get('class_id')
+    subject_id = request.form.get('subject_id')
+    periods = request.form.get('periods')
+    date = request.form.get('date')
+
+    if not all([class_id, subject_id, periods, date]):
+        flash("Missing required form data. Please select Class, Subject, Periods, and Date.", "danger")
+        return redirect(url_for('teacher.dashboard'))
+
+
+    all_students = Student.query.filter_by(class_id=class_id).all()
+    students_with_flags = [(student, False) for student in all_students]
+
+    class_obj = Class.query.get(current_user.class_in_charge)
+    class_name = class_obj.class_name if class_obj else "N/A"
+
+    teacher_classes = Class.query.all()
+    teacher_subjects = Subject.query.filter(
+        Subject.class_id.in_([cls.class_id for cls in teacher_classes])
+    ).all()
+
+    return render_template(
+        'teacher/dashboard.html',
+        teacher=current_user,
+        class_name=class_name,
+        teacher_classes=teacher_classes,
+        teacher_subjects=teacher_subjects,
+        students_with_flags=students_with_flags,
+        recognition_method='manual',
+        class_id=class_id,
+        subject_id=subject_id,
+        period_input=periods,
+        date=date
+    )
+
+
 
 @teacher_bp.route('/confirm_attendance', methods=['POST'])
 @login_required

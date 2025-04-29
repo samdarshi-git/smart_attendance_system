@@ -126,57 +126,12 @@ def view_teachers():
     teachers = Teacher.query.all()
     return render_template('admin/view_teachers.html', teachers=teachers)
 
-# Edit Teacher
-@admin_bp.route('/teachers/edit/<int:teacher_id>', methods=['GET', 'POST'])
-@role_required('admin')
-def edit_teacher(teacher_id):
-    teacher = Teacher.query.get_or_404(teacher_id)
-
-    # Fix: Filter classes not already assigned to other teachers
-    assigned_class_ids = db.session.query(Teacher.class_in_charge).filter(
-        Teacher.class_in_charge.isnot(None),
-        Teacher.teacher_id != teacher_id
-    ).subquery()
-
-    available_classes = Class.query.filter(~Class.class_id.in_(assigned_class_ids)).all()
-
-    if request.method == 'POST':
-        teacher.name = request.form['name']
-        teacher.contact = request.form['contact']
-        teacher.class_in_charge = request.form.get('class_in_charge') or None
-        db.session.commit()
-        flash("Teacher updated successfully!", "success")
-        return redirect(url_for('admin.view_teachers'))
-
-    return render_template('admin/edit_teacher.html', teacher=teacher, available_classes=available_classes)
-
-
 # View Students
 @admin_bp.route('/students')
 @role_required('admin')
 def view_students():
     students = Student.query.all()
     return render_template('admin/view_students.html', students=students)
-
-# Edit Student
-@admin_bp.route('/student/edit/<int:student_id>', methods=['GET', 'POST'])
-@role_required('admin')
-def edit_student(student_id):
-    student = Student.query.get_or_404(student_id)
-
-    if request.method == 'POST':
-        # Only update contact information
-        student.contact = request.form['contact']
-        db.session.commit()
-
-        flash("Student contact updated successfully.", "success")
-        return redirect(url_for('admin.view_students'))
-
-    # Get the class name from the class ID
-    student.class_name = Class.query.get(student.class_id).class_name
-
-    return render_template('admin/edit_student.html', student=student)
-
 
 # View Classes
 @admin_bp.route('/classes')
@@ -238,26 +193,6 @@ def add_student():
     classes = Class.query.all()
     return render_template('admin/add_student.html', classes=classes)
 
-# Delete Student
-@admin_bp.route('/students/delete/<int:student_id>', methods=['POST'])
-@role_required('admin')
-def delete_student(student_id):
-    student = Student.query.get_or_404(student_id)
-
-    # Delete all attendance logs for this student
-    AttendanceLog.query.filter_by(student_id=student_id).delete()
-
-    # Optionally, also delete from AttendanceSummary table
-    AttendanceSummary.query.filter_by(student_id=student_id).delete()
-
-    # Delete the student
-    db.session.delete(student)
-    db.session.commit()
-
-    flash("Student and associated attendance records deleted successfully!", "success")
-    return redirect(url_for('admin.view_students'))
-
-
 # Add Teacher
 @admin_bp.route('/teachers/add', methods=['GET', 'POST'])
 @role_required('admin')
@@ -302,3 +237,67 @@ def delete_teacher(teacher_id):
     db.session.commit()
     flash("Teacher deleted successfully!", "success")
     return redirect(url_for('admin.view_teachers'))
+
+
+# Delete Student
+@admin_bp.route('/students/delete/<int:student_id>', methods=['POST'])
+@role_required('admin')
+def delete_student(student_id):
+    student = Student.query.get_or_404(student_id)
+
+    # Delete all attendance logs for this student
+    AttendanceLog.query.filter_by(student_id=student_id).delete()
+
+    # Optionally, also delete from AttendanceSummary table
+    AttendanceSummary.query.filter_by(student_id=student_id).delete()
+
+    # Delete the student
+    db.session.delete(student)
+    db.session.commit()
+
+    flash("Student and associated attendance records deleted successfully!", "success")
+    return redirect(url_for('admin.view_students'))
+
+
+# Edit Teacher
+@admin_bp.route('/teachers/edit/<int:teacher_id>', methods=['GET', 'POST'])
+@role_required('admin')
+def edit_teacher(teacher_id):
+    teacher = Teacher.query.get_or_404(teacher_id)
+
+    # Fix: Filter classes not already assigned to other teachers
+    assigned_class_ids = db.session.query(Teacher.class_in_charge).filter(
+        Teacher.class_in_charge.isnot(None),
+        Teacher.teacher_id != teacher_id
+    ).subquery()
+
+    available_classes = Class.query.filter(~Class.class_id.in_(assigned_class_ids)).all()
+
+    if request.method == 'POST':
+        teacher.name = request.form['name']
+        teacher.contact = request.form['contact']
+        teacher.class_in_charge = request.form.get('class_in_charge') or None
+        db.session.commit()
+        flash("Teacher updated successfully!", "success")
+        return redirect(url_for('admin.view_teachers'))
+
+    return render_template('admin/edit_teacher.html', teacher=teacher, available_classes=available_classes)
+
+# Edit Student
+@admin_bp.route('/student/edit/<int:student_id>', methods=['GET', 'POST'])
+@role_required('admin')
+def edit_student(student_id):
+    student = Student.query.get_or_404(student_id)
+
+    if request.method == 'POST':
+        # Only update contact information
+        student.contact = request.form['contact']
+        db.session.commit()
+
+        flash("Student contact updated successfully.", "success")
+        return redirect(url_for('admin.view_students'))
+
+    # Get the class name from the class ID
+    student.class_name = Class.query.get(student.class_id).class_name
+
+    return render_template('admin/edit_student.html', student=student)

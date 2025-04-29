@@ -16,7 +16,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or os.environ.get('SQLALCHEMY_DATABASE_URI') or "sqlite:///../instance/app.db"
     app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_FOLDER')
     
     # ⏳ Session timeout: 5 minutes of inactivity

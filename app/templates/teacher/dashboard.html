@@ -45,11 +45,16 @@
 
 <hr>
 
-{% if students_with_flags %}
-<div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-    🎉 <strong>Success!</strong> {{ students_with_flags|selectattr("1")|list|length }} student{{ 's' if students_with_flags|selectattr("1")|list|length != 1 else '' }} recognized.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+{% if students_with_flags and recognition_method in ['video', 'csv'] %}
+    {% set recognized_count = students_with_flags | selectattr("1") | list | length %}
+    <div class="alert alert-{{ 'success' if recognized_count > 0 else 'warning' }} alert-dismissible fade show mt-3" role="alert">
+        {% if recognized_count > 0 %}
+            🎉 <strong>Success!</strong> {{ recognized_count }} student{{ 's' if recognized_count != 1 else '' }} recognized.
+        {% else %}
+            ⚠️ <strong>Notice:</strong> No students were recognized. You may review manually below.
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 {% endif %}
 
 
@@ -103,8 +108,33 @@
         <input type="file" name="video" accept="video/*" class="form-control" required>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-2">Upload</button>
+    <!-- Upload Type Buttons -->
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary" id="video-btn">Upload Video</button>
+        <button type="button" class="btn btn-success" id="csv-btn">Upload CSV</button>
+        <button type="button" class="btn btn-secondary" id="manual-btn">Manual Attendance</button>
+    </div>
+
 </form>
+
+<!-- Hidden Form for CSV Upload -->
+<form id="csv-upload-form" method="POST" enctype="multipart/form-data" action="{{ url_for('teacher.upload_csv') }}" style="display: none;">
+    <input type="hidden" name="class_id">
+    <input type="hidden" name="subject_id">
+    <input type="hidden" name="periods">
+    <input type="hidden" name="date">
+    <input type="file" name="csv_file" accept=".csv,.txt" required>
+</form>
+
+<!-- Hidden Form for Manual Attendance -->
+<form id="manual-attendance-form" method="POST" action="{{ url_for('teacher.manual_attendance') }}" style="display: none;">
+    <input type="hidden" name="class_id">
+    <input type="hidden" name="subject_id">
+    <input type="hidden" name="periods">
+    <input type="hidden" name="date">
+</form>
+
+
 
 <!-- Subject Loader Script -->
 <script>
@@ -261,5 +291,48 @@
         };
     });
 </script>
+
+<script>
+    const classSelect = document.getElementById('class_id');
+    const subjectSelect = document.getElementById('subject_id');
+    const periodsInput = document.querySelector('input[name="periods"]');
+    const dateInput = document.querySelector('input[name="date"]');
+
+    function validateFormInputs() {
+        if (!classSelect.value || !subjectSelect.value || !periodsInput.value || !dateInput.value) {
+            alert("Please fill in Class, Subject, Periods, and Date before continuing.");
+            return false;
+        }
+        return true;
+    }
+
+    function populateForm(form) {
+        form.querySelector('input[name="class_id"]').value = classSelect.value;
+        form.querySelector('input[name="subject_id"]').value = subjectSelect.value;
+        form.querySelector('input[name="periods"]').value = periodsInput.value;
+        form.querySelector('input[name="date"]').value = dateInput.value;
+    }
+
+    document.getElementById('csv-btn').addEventListener('click', () => {
+        if (!validateFormInputs()) return;
+
+        const csvForm = document.getElementById('csv-upload-form');
+        populateForm(csvForm);
+        csvForm.querySelector('input[type="file"]').click();
+        csvForm.querySelector('input[type="file"]').addEventListener('change', () => {
+            csvForm.submit();
+        }, { once: true });
+    });
+
+    document.getElementById('manual-btn').addEventListener('click', () => {
+        if (!validateFormInputs()) return;
+
+        const manualForm = document.getElementById('manual-attendance-form');
+        populateForm(manualForm);
+        manualForm.submit();
+    });
+</script>
+
+
 
 {% endblock %}

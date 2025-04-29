@@ -64,27 +64,35 @@ def load_registered_students() -> dict[int, np.ndarray]:
     return student_embeddings
 
 
-def match_faces_to_students(video_face_embeddings: list, registered_embeddings: dict, similarity_threshold: float = 0.5) -> set:
+def match_faces_to_students(video_face_embeddings: list, registered_embeddings: dict, similarity_threshold: float = 0.6) -> set:
     """
     Match extracted face embeddings to registered students using cosine similarity.
+    Modified: Assign detected faces to best matching student if above threshold.
     """
-    identified_students = set()
+    identified_students = set() 
 
-    for student_name, student_embedding in registered_embeddings.items():
-        if student_embedding.shape != (128,):
-            print(f"[WARNING] Skipping {student_name}: Invalid embedding shape {student_embedding.shape}")
-            continue
+    for embedding in video_face_embeddings:
+        best_match_id = None
+        best_similarity = -1
 
-        similarities = [1 - cosine(student_embedding, embedding) for embedding in video_face_embeddings]
-        highest_similarity = max(similarities, default=0.0)
+        for student_id, student_embedding in registered_embeddings.items():
+            if student_embedding.shape != (128,):
+                print(f"[WARNING] Skipping {student_id}: Invalid embedding shape {student_embedding.shape}")
+                continue
 
-        print(f"[DEBUG] {student_name} - Max Similarity: {highest_similarity:.3f}")
+            similarity = 1 - cosine(student_embedding, embedding)
+            if similarity > best_similarity:
+                best_similarity = similarity
+                best_match_id = student_id
 
-        if highest_similarity > similarity_threshold:
-            identified_students.add(student_name)
-            print(f"[INFO] Recognized: {student_name}")
+        print(f"[DEBUG] Best Match: {best_match_id} with similarity {best_similarity:.3f}")
+
+        if best_similarity >= similarity_threshold:
+            identified_students.add(best_match_id)
+            print(f"[INFO] Recognized: {best_match_id}")
 
     return identified_students
+
 
 def recognize_students_in_video(video_path: str) -> set:
     """
