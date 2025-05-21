@@ -11,3 +11,4 @@ instance/
 *.db
 *.sqlite3
 venv/
+static/

@@ -1,18 +1,16 @@
 # 📸 SnapTrack - Smart Attendance System
 
-A smart attendance system leveraging the power of facial recognition to streamline and automate attendance tracking. Students register effortlessly with selfie videos, and teachers simply upload class recordings. SnapTrack intelligently detects faces, accurately marks attendance, and offers a fast, accurate, and completely hands-free solution!
+A smart attendance system leveraging the power of facial recognition to streamline and automate attendance tracking. Students register effortlessly with selfie videos, and teachers simply upload class recordings. SnapTrack intelligently detects faces, accurately marks attendance.
 
 ---
 
 ## ✨ Key Features
 
-* **Role-Based Access:** Secure and distinct login portals for Administrators, Teachers, and Students, ensuring appropriate access levels.
-* **Effortless Video Management:** Teachers can easily upload and manage class recordings for attendance processing.
+* **Role-Based Access:** Secure and distinct login portals for Administrator, Teachers, and Students, ensuring appropriate access levels.
+* **Effortless Video Management:** Teachers and Students can easily upload and manage class recordings for attendance processing.
 * **Intelligent Face Recognition:** Built upon robust deep learning models for accurate and reliable facial detection and recognition.
 * **Comprehensive Analytics Dashboard:** Gain valuable insights with attendance analytics presented in an intuitive dashboard.
 * **Secure Session Handling:** Robust session management to protect user data and maintain application security.
-* **Seamless Database Migrations:** Integrated Flask-Migrate for smooth and efficient database schema updates.
-* **Flexible Database Choice:** Easily switch between the simplicity of SQLite for development and the power of PostgreSQL for production by a simple configuration change.
 
 ---
 
@@ -48,7 +46,6 @@ Follow these straightforward steps to get SnapTrack up and running on your local
     ADMIN_ID=your-admin-id
     ADMIN_PASSWORD=your-admin-password
     ```
-    **Note:** To use PostgreSQL, modify the `SQLALCHEMY_DATABASE_URI` to your PostgreSQL connection string. For example: `postgresql://user:password@host:port/database_name`.
 
 4.  **Initialize the Database:**
     Use create_tables.py: Run this only for the first time
@@ -64,29 +61,6 @@ Follow these straightforward steps to get SnapTrack up and running on your local
 6.  **Admin Login:**
     Use the `ADMIN_ID` and `ADMIN_PASSWORD` you defined in the `.env` file to log in to the Admin dashboard and start managing your system.
 
----
-
-## 📂 Project Structure
-
-smart_attendance_system/
-├── app/
-│   ├── init.py
-│   ├── models.py         # Database models
-│   ├── forms.py          # Form definitions
-│   ├── routes/           # Application routes and views
-│   ├── ml/               # Machine learning related code
-│   ├── static/uploads/   # Directory for uploaded videos
-│   └── templates/        # HTML templates
-├── helper/
-│   └── create_tables.py  # Optional script for initial database setup (dev/testing)
-├── instance/
-│   └── app.db            # SQLite database file (default)
-├── run.py              # Application entry point
-├── .env                # Environment variables
-├── .gitignore          # Specifies intentionally untracked files that Git should ignore
-├── requirements.txt    # List of Python dependencies
-└── README.md           # This file
-
 
 ---
 
@@ -99,4 +73,4 @@ smart_attendance_system/
 
 ---
 
-## ❤️ Made with Love by Samdarshi
+## ❤️ Made with Love by Samdarshi, Sonali and Annapurna
