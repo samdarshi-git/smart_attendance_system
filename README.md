@@ -41,7 +41,6 @@ Follow these straightforward steps to get SnapTrack up and running on your local
     Create a `.env` file in the root directory of the project and populate it with your specific configurations:
     ```ini
     SECRET_KEY=your-secret-key-here
-    SQLALCHEMY_DATABASE_URI=sqlite:///../instance/app.db
     UPLOAD_FOLDER=app/static/uploads/
     ADMIN_ID=your-admin-id
     ADMIN_PASSWORD=your-admin-password
@@ -67,10 +66,9 @@ Follow these straightforward steps to get SnapTrack up and running on your local
 ## 🚀 What's On the Horizon?
 
 * **🌐 PostgreSQL Integration Ready:** Seamlessly switch to a production-ready PostgreSQL database with a simple `.env` configuration.
-* **🚀 Deployment Guide:** Stay tuned for comprehensive deployment guides for popular platforms like Heroku and Render.
 * **📈 Enhanced Analytics:** Expect more detailed attendance analytics and insightful visual representations.
 * **🔁 CI/CD and Testing:** We are working on implementing Continuous Integration/Continuous Deployment pipelines and robust testing frameworks.
 
 ---
 
-## ❤️ Made with Love by Samdarshi, Sonali and Annapurna
+## ❤️ Made with Love by Samdarshi
